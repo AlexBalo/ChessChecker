@@ -40,9 +40,16 @@ public class Printer {
 
     public void printOutput(List<Configuration> configurations) {
         int counter = 0;
+        int configurationsSize = configurations.size();
+
         System.out.println("");
         System.out.println("OUTPUT:");
-        System.out.println("Total number of configuration: " + configurations.size());
+        if (configurationsSize == 0) {
+            System.out.println("Unfortunately no configurations were found for the input you entered");
+            return;
+        }
+
+        System.out.println("Total number of configurations: " + configurationsSize);
         for (Configuration configuration : configurations) {
             counter++;
             System.out.println("# " + counter);

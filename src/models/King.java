@@ -24,7 +24,7 @@ public class King extends Piece {
 
     @Override
     public boolean canPieceTakeSpot(int rowPosition, int columnPosition, boolean[][] boardSpots, List<Piece> placesPieces) {
-        return canPieceTakeSpotThisSpot(rowPosition, columnPosition, boardSpots, placesPieces);
+        return canPieceTakeThisSpot(rowPosition, columnPosition, boardSpots, placesPieces);
     }
 
     @Override
@@ -89,8 +89,8 @@ public class King extends Piece {
         }
     }
 
-    private boolean canPieceTakeSpotThisSpot(int rowPosition, int columnPosition, boolean[][] boardSpots,
-                                             List<Piece> placedPieces) {
+    private boolean canPieceTakeThisSpot(int rowPosition, int columnPosition, boolean[][] boardSpots,
+                                         List<Piece> placedPieces) {
         if (placedPieces.isEmpty()) {
             return true;
         }

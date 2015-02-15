@@ -1,8 +1,9 @@
 import models.King;
 import models.Piece;
+import models.PieceType;
+import models.Rook;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -11,7 +12,8 @@ import java.util.List;
 public class Analyser {
 
     private int[][] board;
-    private King[] kings;
+    private int kings;
+    private int rooks;
 
     private List<Configuration> configurations;
     private List<Piece> configurationPieces;
@@ -20,24 +22,45 @@ public class Analyser {
     private Analyser(Builder builder) {
         board = builder.board;
         kings = builder.kings;
+        rooks = builder.rooks;
         checkValidity();
     }
 
     private void checkValidity() {
-        if (kings.length == 0) {
+        // TODO
+        int totalCount = kings + rooks;
+        if (totalCount == 0) {
             throw new RuntimeException("At least one piece should be added");
         }
     }
 
-    private List<Piece> getAllPieces() {
+    private List<Piece> initializeAvailablePieces() {
         List<Piece> pieces = new ArrayList<Piece>();
-        Collections.addAll(pieces, kings);
+        populateList(PieceType.KING, kings, pieces);
+        populateList(PieceType.ROOK, rooks, pieces);
         return pieces;
+    }
+
+    private void populateList(PieceType type, int quantity, List<Piece> pieces) {
+        if (quantity == 0) {
+            return;
+        }
+        // TODO;
+        for (int i = 0; i < quantity; i++) {
+            switch (type) {
+                case KING:
+                    pieces.add(new King());
+                    break;
+                case ROOK:
+                    pieces.add(new Rook());
+                    break;
+            }
+        }
     }
 
     public List<Configuration> calculateConfigurations() {
         configurations = new ArrayList<Configuration>();
-        availablePieces = getAllPieces();
+        availablePieces = initializeAvailablePieces();
         int rowsLength = board.length;
         for (int i = 0; i < rowsLength; i++) {
             int columnsLength = board[i].length;
@@ -83,6 +106,10 @@ public class Analyser {
                 piece.setRow(i);
                 piece.setColumn(j);
                 Piece pieceToAdd = getPieceToAdd(piece);
+
+                if (configurationPieces.size() == (consideredIndex + 1)) {
+                    configurationPieces.remove(consideredIndex);
+                }
                 configurationPieces.add(pieceToAdd);
 
                 int configurationSize = configurationPieces.size();
@@ -113,17 +140,24 @@ public class Analyser {
     }
 
     private Piece getPieceToAdd(Piece piece) {
-        Piece pieceToAdd = null;
-        // TODO
-        if (piece instanceof King) {
-            pieceToAdd = new King();
-        }
-
+        Piece pieceToAdd = getPieceOfType(piece);
         if (pieceToAdd != null) {
             pieceToAdd.setRow(piece.getRow());
             pieceToAdd.setColumn(piece.getColumn());
         }
         return pieceToAdd;
+    }
+
+    private Piece getPieceOfType(Piece piece) {
+        Piece pieceToReturn = null;
+        // TODO
+        if (piece instanceof King) {
+            pieceToReturn = new King();
+        }
+        if (piece instanceof Rook) {
+            pieceToReturn = new Rook();
+        }
+        return pieceToReturn;
     }
 
     private void createConfiguration() {
@@ -159,22 +193,33 @@ public class Analyser {
 
     public static class Builder {
         private final int[][] board;
-        private King[] kings;
+        private int kings;
+        private int rooks;
 
         public Builder(int width, int height) {
             this.board = new int[width][height];
         }
 
-        public Builder withKings(int quantity) {
-            this.kings = new King[quantity];
-            for (int i = 0; i < kings.length; i++) {
-                kings[i] = new King();
-            }
+        public Builder withKings(int kings) {
+            this.kings = kings;
+            throwExceptionWithNegatives(kings);
+            return this;
+        }
+
+        public Builder withRooks(int rooks) {
+            this.rooks = rooks;
+            throwExceptionWithNegatives(rooks);
             return this;
         }
 
         public Analyser build() {
             return new Analyser(this);
+        }
+
+        private void throwExceptionWithNegatives(int quantity) {
+            if (quantity < 0) {
+                throw new RuntimeException("Cannot insert negative quantities");
+            }
         }
     }
 }

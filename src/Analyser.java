@@ -8,17 +8,33 @@ import java.util.List;
 
 /**
  * Created by alessandro.balocco
+ * This class is in change of analyzing pieces and find all possible configurations with the given input
  */
 public class Analyser {
 
+    /* The inputs provided by the user */
     private int[][] board;
     private int kings;
     private int rooks;
 
+    /**
+     * The list of available configurations to be returned
+     */
     private List<Configuration> configurations;
+    /**
+     * The list that contains all the pieces related to a specific configuration
+     */
     private List<Piece> configurationPieces;
+    /**
+     * The list of pieces created depending on user inputs
+     */
     private List<Piece> availablePieces;
 
+    /**
+     * Private constructor created by the Builder
+     *
+     * @param builder the builder provided by the user
+     */
     private Analyser(Builder builder) {
         board = builder.board;
         kings = builder.kings;
@@ -26,6 +42,11 @@ public class Analyser {
         checkValidity();
     }
 
+    /**
+     * Check if the input give by the user is valid and if it is not throws and Exception with message
+     *
+     * @throws java.lang.RuntimeException when no pieces have been inserted
+     */
     private void checkValidity() {
         // TODO
         int totalCount = kings + rooks;
@@ -34,6 +55,11 @@ public class Analyser {
         }
     }
 
+    /**
+     * Initialize the pieces depending on Builder inputs
+     *
+     * @return a list of pieces to place on the board
+     */
     private List<Piece> initializeAvailablePieces() {
         List<Piece> pieces = new ArrayList<Piece>();
         populateList(PieceType.KING, kings, pieces);
@@ -41,6 +67,13 @@ public class Analyser {
         return pieces;
     }
 
+    /**
+     * Populate list with the input given by the user
+     *
+     * @param type     type of piece to insert
+     * @param quantity of pieces of same type
+     * @param pieces   the list to insert the pieces into
+     */
     private void populateList(PieceType type, int quantity, List<Piece> pieces) {
         if (quantity == 0) {
             return;
@@ -58,6 +91,12 @@ public class Analyser {
         }
     }
 
+    /**
+     * This method calculate all the possible configurations it starts from the top left
+     * corner and starts searching for configurations
+     *
+     * @return a list with all the configurations or empty when nothing was found
+     */
     public List<Configuration> calculateConfigurations() {
         configurations = new ArrayList<Configuration>();
         availablePieces = initializeAvailablePieces();
@@ -73,6 +112,14 @@ public class Analyser {
         return configurations;
     }
 
+    /**
+     * Every time this method is called it means that the first item has changed its position.
+     * It also means that we can consider the first item as first item of the configuration.
+     * After that it starts looping looking for possible combinations
+     *
+     * @param row    the index of the row of the first item
+     * @param column the index of the column of the first item
+     */
     private void initConfigurationResearch(int row, int column) {
         Piece piece = availablePieces.get(0);
         piece.setRow(row);
@@ -84,13 +131,20 @@ public class Analyser {
         int size = availablePieces.size();
         if (size > 1) {
             int indexToStartSearchingFor = 1;
-            loopForSpaces(indexToStartSearchingFor);
+            searchAvailableConfigurations(indexToStartSearchingFor);
         } else {
             createConfiguration();
         }
     }
 
-    private void loopForSpaces(int consideredIndex) {
+    /**
+     * This method continues looping recursively searching for a valid configuration. Every time a valid
+     * piece find a valid position it advances to next piece in the list to check for valid position and
+     * so on. At the same time it is also controlling the state of the configuration and updating it.
+     *
+     * @param consideredIndex this represent the index to check in the pieces list
+     */
+    private void searchAvailableConfigurations(int consideredIndex) {
         int rowsLength = board.length;
         for (int i = 0; i < rowsLength; i++) {
             int columnsLength = board[i].length;
@@ -118,7 +172,7 @@ public class Analyser {
                     createConfiguration();
                     configurationPieces.remove(consideredIndex);
                 } else {
-                    loopForSpaces(consideredIndex + 1);
+                    searchAvailableConfigurations(consideredIndex + 1);
                 }
             }
         }
@@ -128,6 +182,12 @@ public class Analyser {
         }
     }
 
+    /**
+     * This method calculates the available spots in order to understand where a piece can be placed.
+     * It considers both the position of the other pieces and their safe zones
+     *
+     * @return a map of boolean to indicate wheter the cell is free or not
+     */
     private boolean[][] calculateAvailableSpots() {
         boolean[][] availableSpots = new boolean[board.length][board[0].length];
         for (Piece piece : configurationPieces) {
@@ -139,6 +199,12 @@ public class Analyser {
         return availableSpots;
     }
 
+    /**
+     * This method create a new piece based on the one considered in the main list.
+     *
+     * @param piece the placed piece contained in the main list
+     * @return the piece to be added in the configuration
+     */
     private Piece getPieceToAdd(Piece piece) {
         Piece pieceToAdd = getPieceOfType(piece);
         if (pieceToAdd != null) {
@@ -148,6 +214,12 @@ public class Analyser {
         return pieceToAdd;
     }
 
+    /**
+     * Return a piece of the correct type based on the one which was considered
+     *
+     * @param piece the piece to consider
+     * @return a new piece of the same type
+     */
     private Piece getPieceOfType(Piece piece) {
         Piece pieceToReturn = null;
         // TODO
@@ -160,6 +232,11 @@ public class Analyser {
         return pieceToReturn;
     }
 
+    /**
+     * Create a valid configuration and add it to the list of all possible configurations.
+     * Before adding it also checks if the same configuration is already in the list.
+     * In that case no configuration is added
+     */
     private void createConfiguration() {
         if (configurationAlreadyExists()) {
             return;
@@ -172,51 +249,92 @@ public class Analyser {
         configurations.add(configuration);
     }
 
+    /**
+     * This method checks if a configuration which has the pieces in the same position already exists
+     *
+     * @return true whether the same configuration already exists
+     */
     private boolean configurationAlreadyExists() {
         for (Configuration configuration : configurations) {
-            int equalsItem = 0;
-            int piecesSize = configuration.getPieces().size();
-            for (int j = 0; j < piecesSize; j++) {
-                Piece savedPiece = configuration.getPieces().get(j);
-                for (Piece pieceToBeSaved : configurationPieces) {
-                    if (savedPiece.equals(pieceToBeSaved)) {
-                        equalsItem++;
-                    }
-                }
-            }
-            if (equalsItem == configurationPieces.size()) {
+            boolean alreadyContainConfig = configuration.isContainingSamePieces(configurationPieces);
+            if (alreadyContainConfig) {
                 return true;
             }
         }
         return false;
     }
 
+    /**
+     * Builder class for the Analyzer
+     */
     public static class Builder {
         private final int[][] board;
         private int kings;
         private int rooks;
 
+        /**
+         * Initialize the builder with the size of the board
+         *
+         * @param width  of the board
+         * @param height of the board
+         */
         public Builder(int width, int height) {
+            throwExceptionWithNegativeSizes(width, height);
             this.board = new int[width][height];
         }
 
+        /**
+         * The selected number of kings
+         *
+         * @param kings the quantity of this type
+         * @return the builder
+         */
         public Builder withKings(int kings) {
+            throwExceptionWithNegativeQuantities(kings);
             this.kings = kings;
-            throwExceptionWithNegatives(kings);
             return this;
         }
 
+        /**
+         * The selected number of rooks
+         *
+         * @param rooks the quantity of this type
+         * @return the builder
+         */
         public Builder withRooks(int rooks) {
+            throwExceptionWithNegativeQuantities(rooks);
             this.rooks = rooks;
-            throwExceptionWithNegatives(rooks);
             return this;
         }
 
+        /**
+         * Builds the Analyzer
+         *
+         * @return an instance of the Analyzer class
+         */
         public Analyser build() {
             return new Analyser(this);
         }
 
-        private void throwExceptionWithNegatives(int quantity) {
+        /**
+         * This method checks if user inserted a valid value for the board
+         *
+         * @param width  the width of the board
+         * @param height the height of the board
+         */
+        private void throwExceptionWithNegativeSizes(int width, int height) {
+            if (width < 0 || height < 0) {
+                throw new RuntimeException("Board cannot have negative dimension");
+            }
+        }
+
+        /**
+         * This method checks if user inserted a negative quantity
+         *
+         * @param quantity the quantity of this type
+         * @throws java.lang.RuntimeException in case the user insert negative values
+         */
+        private void throwExceptionWithNegativeQuantities(int quantity) {
             if (quantity < 0) {
                 throw new RuntimeException("Cannot insert negative quantities");
             }

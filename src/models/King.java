@@ -7,7 +7,6 @@ import java.util.List;
  */
 public class King extends Piece {
 
-
     public King() {
 
     }
@@ -18,13 +17,13 @@ public class King extends Piece {
     }
 
     @Override
-    public void calculateEatableSpots(int rowPosition, int columnPosition, boolean[][] boardSpots) {
-        executeBoardOperations(rowPosition, columnPosition, boardSpots);
+    public void calculateEatableSpots(int rowIndex, int columnIndex, boolean[][] boardSpots) {
+        executeBoardOperations(rowIndex, columnIndex, boardSpots);
     }
 
     @Override
-    public boolean canPieceTakeSpot(int rowPosition, int columnPosition, boolean[][] boardSpots, List<Piece> placesPieces) {
-        return canPieceTakeThisSpot(rowPosition, columnPosition, boardSpots, placesPieces);
+    public boolean canPieceTakeSpot(int rowIndex, int columnIndex, boolean[][] boardSpots, List<Piece> placesPieces) {
+        return canPieceTakeThisSpot(rowIndex, columnIndex, boardSpots, placesPieces);
     }
 
     @Override
@@ -39,57 +38,57 @@ public class King extends Piece {
         return false;
     }
 
-    private void executeBoardOperations(int rowPosition, int columnPosition, boolean[][] boardSpots) {
+    private void executeBoardOperations(int rowIndex, int columnIndex, boolean[][] boardSpots) {
         int rowsLength = boardSpots.length;
         int columnsLength = boardSpots[0].length;
 
-        boolean validLeftColumn = columnPosition - 1 >= 0;
-        boolean validTopRow = rowPosition - 1 >= 0;
-        boolean validRightColumn = columnPosition + 1 < columnsLength;
-        boolean validBottomRow = rowPosition + 1 < rowsLength;
+        boolean validLeftColumn = columnIndex - 1 >= 0;
+        boolean validTopRow = rowIndex - 1 >= 0;
+        boolean validRightColumn = columnIndex + 1 < columnsLength;
+        boolean validBottomRow = rowIndex + 1 < rowsLength;
 
         // Top left
         if (validLeftColumn && validTopRow) {
-            markSpotAsTaken(rowPosition - 1, columnPosition - 1, boardSpots);
+            markSpotAsTaken(rowIndex - 1, columnIndex - 1, boardSpots);
         }
 
         // Top
         if (validTopRow) {
-            markSpotAsTaken(rowPosition - 1, columnPosition, boardSpots);
+            markSpotAsTaken(rowIndex - 1, columnIndex, boardSpots);
         }
 
         // Top right
         if (validTopRow && validRightColumn) {
-            markSpotAsTaken(rowPosition - 1, columnPosition + 1, boardSpots);
+            markSpotAsTaken(rowIndex - 1, columnIndex + 1, boardSpots);
         }
 
         // Right
         if (validRightColumn) {
-            markSpotAsTaken(rowPosition, columnPosition + 1, boardSpots);
+            markSpotAsTaken(rowIndex, columnIndex + 1, boardSpots);
         }
 
         // Bottom right
         if (validBottomRow && validRightColumn) {
-            markSpotAsTaken(rowPosition + 1, columnPosition + 1, boardSpots);
+            markSpotAsTaken(rowIndex + 1, columnIndex + 1, boardSpots);
         }
 
         // Bottom
         if (validBottomRow) {
-            markSpotAsTaken(rowPosition + 1, columnPosition, boardSpots);
+            markSpotAsTaken(rowIndex + 1, columnIndex, boardSpots);
         }
 
         // Bottom left
         if (validLeftColumn && validBottomRow) {
-            markSpotAsTaken(rowPosition + 1, columnPosition - 1, boardSpots);
+            markSpotAsTaken(rowIndex + 1, columnIndex - 1, boardSpots);
         }
 
         // Left
         if (validLeftColumn) {
-            markSpotAsTaken(rowPosition, columnPosition - 1, boardSpots);
+            markSpotAsTaken(rowIndex, columnIndex - 1, boardSpots);
         }
     }
 
-    private boolean canPieceTakeThisSpot(int rowPosition, int columnPosition, boolean[][] boardSpots,
+    private boolean canPieceTakeThisSpot(int rowIndex, int columnIndex, boolean[][] boardSpots,
                                          List<Piece> placedPieces) {
         if (placedPieces.isEmpty()) {
             return true;
@@ -98,61 +97,61 @@ public class King extends Piece {
         int rowsLength = boardSpots.length;
         int columnsLength = boardSpots[0].length;
 
-        boolean validLeftColumn = columnPosition - 1 >= 0;
-        boolean validTopRow = rowPosition - 1 >= 0;
-        boolean validRightColumn = columnPosition + 1 < columnsLength;
-        boolean validBottomRow = rowPosition + 1 < rowsLength;
+        boolean validLeftColumn = columnIndex - 1 >= 0;
+        boolean validTopRow = rowIndex - 1 >= 0;
+        boolean validRightColumn = columnIndex + 1 < columnsLength;
+        boolean validBottomRow = rowIndex + 1 < rowsLength;
         boolean canTakeSpot = true;
 
         // Top left
         if (validLeftColumn && validTopRow) {
-            canTakeSpot = canTakeSpot(rowPosition - 1, columnPosition - 1, placedPieces);
+            canTakeSpot = canTakeSpot(rowIndex - 1, columnIndex - 1, placedPieces);
         }
 
         // Top
         if (canTakeSpot && validTopRow) {
-            canTakeSpot = canTakeSpot(rowPosition - 1, columnPosition, placedPieces);
+            canTakeSpot = canTakeSpot(rowIndex - 1, columnIndex, placedPieces);
         }
 
         // Top right
         if (canTakeSpot && validTopRow && validRightColumn) {
-            canTakeSpot = canTakeSpot(rowPosition - 1, columnPosition + 1, placedPieces);
+            canTakeSpot = canTakeSpot(rowIndex - 1, columnIndex + 1, placedPieces);
         }
 
         // Right
         if (canTakeSpot && validRightColumn) {
-            canTakeSpot = canTakeSpot(rowPosition, columnPosition + 1, placedPieces);
+            canTakeSpot = canTakeSpot(rowIndex, columnIndex + 1, placedPieces);
         }
 
         // Bottom right
         if (canTakeSpot && validBottomRow && validRightColumn) {
-            canTakeSpot = canTakeSpot(rowPosition + 1, columnPosition + 1, placedPieces);
+            canTakeSpot = canTakeSpot(rowIndex + 1, columnIndex + 1, placedPieces);
         }
 
         // Bottom
         if (canTakeSpot && validBottomRow) {
-            canTakeSpot = canTakeSpot(rowPosition + 1, columnPosition, placedPieces);
+            canTakeSpot = canTakeSpot(rowIndex + 1, columnIndex, placedPieces);
         }
 
         // Bottom left
         if (canTakeSpot && validLeftColumn && validBottomRow) {
-            canTakeSpot = canTakeSpot(rowPosition + 1, columnPosition - 1, placedPieces);
+            canTakeSpot = canTakeSpot(rowIndex + 1, columnIndex - 1, placedPieces);
         }
 
         // Left
         if (canTakeSpot && validLeftColumn) {
-            canTakeSpot = canTakeSpot(rowPosition, columnPosition - 1, placedPieces);
+            canTakeSpot = canTakeSpot(rowIndex, columnIndex - 1, placedPieces);
         }
         return canTakeSpot;
     }
 
-    private void markSpotAsTaken(int rowPosition, int columnPosition, boolean[][] boardSpots) {
-        boardSpots[rowPosition][columnPosition] = true;
+    private void markSpotAsTaken(int rowIndex, int columnIndex, boolean[][] boardSpots) {
+        boardSpots[rowIndex][columnIndex] = true;
     }
 
-    private boolean canTakeSpot(int rowPosition, int columnPosition, List<Piece> placesPieces) {
+    private boolean canTakeSpot(int rowIndex, int columnIndex, List<Piece> placesPieces) {
         for (Piece piece : placesPieces) {
-            if (piece.getRow() == rowPosition && piece.getColumn() == columnPosition) {
+            if (piece.getRow() == rowIndex && piece.getColumn() == columnIndex) {
                 return false;
             }
         }

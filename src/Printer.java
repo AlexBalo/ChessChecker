@@ -4,12 +4,23 @@ import java.util.List;
 
 /**
  * Created by alessandro.balocco
+ * This class is a utility class in charge of printing inputs and outputs
  */
 public class Printer {
 
     public Printer() {
     }
 
+    /**
+     * Print the input of the test
+     *
+     * @param boardSize the dimension of the board
+     * @param kings     the quantity of kings
+     * @param rooks     the quantity of rooks
+     * @param queens    the quantity of queens
+     * @param bishops   the quantity of bishops
+     * @param knights   the quantity of knights
+     */
     public void printInput(int boardSize, int kings, int rooks, int queens, int bishops, int knights) {
         System.out.println("INPUT:");
         StringBuilder builder = new StringBuilder();
@@ -38,6 +49,11 @@ public class Printer {
         System.out.println(builder.toString());
     }
 
+    /**
+     * This method prints the output of the test
+     *
+     * @param configurations the configurations that need to be printed
+     */
     public void printOutput(List<Configuration> configurations) {
         int counter = 0;
         int configurationsSize = configurations.size();
@@ -58,6 +74,11 @@ public class Printer {
         }
     }
 
+    /**
+     * This method populate a board with the pieces of a single configuration
+     *
+     * @param configuration the configuration to use to populate the board
+     */
     private void populateBoard(Configuration configuration) {
         int[][] board = configuration.getBoard();
         List<Piece> placedPieces = configuration.getPieces();
@@ -68,6 +89,11 @@ public class Printer {
         printBoard(piecesBoard);
     }
 
+    /**
+     * Print the board indicating pieces initials
+     *
+     * @param piecesBoard the board to be printed
+     */
     private void printBoard(Piece[][] piecesBoard) {
         int rowSize = piecesBoard.length + 1;
         int columnSize = piecesBoard[0].length + 1;

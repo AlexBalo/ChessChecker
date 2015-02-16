@@ -1,7 +1,4 @@
-import models.King;
-import models.Piece;
-import models.PieceType;
-import models.Rook;
+import models.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +13,7 @@ public class Analyser {
     private int[][] board;
     private int kings;
     private int rooks;
+    private int knights;
 
     /**
      * The list of available configurations to be returned
@@ -39,6 +37,7 @@ public class Analyser {
         board = builder.board;
         kings = builder.kings;
         rooks = builder.rooks;
+        knights = builder.knights;
         checkValidity();
     }
 
@@ -48,8 +47,8 @@ public class Analyser {
      * @throws java.lang.RuntimeException when no pieces have been inserted
      */
     private void checkValidity() {
-        // TODO
-        int totalCount = kings + rooks;
+        // TODO add control
+        int totalCount = kings + rooks + knights;
         if (totalCount == 0) {
             throw new RuntimeException("At least one piece should be added");
         }
@@ -61,9 +60,11 @@ public class Analyser {
      * @return a list of pieces to place on the board
      */
     private List<Piece> initializeAvailablePieces() {
+        // TODO add pieces
         List<Piece> pieces = new ArrayList<Piece>();
         populateList(PieceType.KING, kings, pieces);
         populateList(PieceType.ROOK, rooks, pieces);
+        populateList(PieceType.KNIGHT, knights, pieces);
         return pieces;
     }
 
@@ -78,7 +79,7 @@ public class Analyser {
         if (quantity == 0) {
             return;
         }
-        // TODO;
+        // TODO add switch case
         for (int i = 0; i < quantity; i++) {
             switch (type) {
                 case KING:
@@ -86,6 +87,9 @@ public class Analyser {
                     break;
                 case ROOK:
                     pieces.add(new Rook());
+                    break;
+                case KNIGHT:
+                    pieces.add(new Knight());
                     break;
             }
         }
@@ -142,14 +146,16 @@ public class Analyser {
      * piece find a valid position it advances to next piece in the list to check for valid position and
      * so on. At the same time it is also controlling the state of the configuration and updating it.
      *
-     * @param consideredIndex this represent the index to check in the pieces list
+     * @param currentIndex this represent the index to check in the pieces list
      */
-    private void searchAvailableConfigurations(int consideredIndex) {
+    private void searchAvailableConfigurations(int currentIndex) {
         int rowsLength = board.length;
         for (int i = 0; i < rowsLength; i++) {
             int columnsLength = board[i].length;
             for (int j = 0; j < columnsLength; j++) {
-                Piece piece = availablePieces.get(consideredIndex);
+                cleanTmpPiecesListIfNecessary(currentIndex);
+
+                Piece piece = availablePieces.get(currentIndex);
                 boolean[][] availableSpots = calculateAvailableSpots();
                 boolean spotTaken = availableSpots[i][j];
                 boolean canPieceTakeSpot = piece.canPieceTakeSpot(i, j, availableSpots, configurationPieces);
@@ -161,24 +167,30 @@ public class Analyser {
                 piece.setColumn(j);
                 Piece pieceToAdd = getPieceToAdd(piece);
 
-                if (configurationPieces.size() == (consideredIndex + 1)) {
-                    configurationPieces.remove(consideredIndex);
-                }
                 configurationPieces.add(pieceToAdd);
 
                 int configurationSize = configurationPieces.size();
                 int availableSize = availablePieces.size();
                 if (configurationSize == availableSize) {
                     createConfiguration();
-                    configurationPieces.remove(consideredIndex);
+                    configurationPieces.remove(currentIndex);
                 } else {
-                    searchAvailableConfigurations(consideredIndex + 1);
+                    searchAvailableConfigurations(currentIndex + 1);
                 }
             }
         }
 
-        if (configurationPieces.size() == (consideredIndex + 1)) {
-            configurationPieces.remove(consideredIndex);
+        cleanTmpPiecesListIfNecessary(currentIndex);
+    }
+
+    /**
+     * This method is in charge of keeping the list of pieces clean and up to date with the configuration
+     *
+     * @param currentIndex the index that is been currently analyzed
+     */
+    private void cleanTmpPiecesListIfNecessary(int currentIndex) {
+        if (configurationPieces.size() == (currentIndex + 1)) {
+            configurationPieces.remove(currentIndex);
         }
     }
 
@@ -222,12 +234,15 @@ public class Analyser {
      */
     private Piece getPieceOfType(Piece piece) {
         Piece pieceToReturn = null;
-        // TODO
+        // TODO add instance
         if (piece instanceof King) {
             pieceToReturn = new King();
         }
         if (piece instanceof Rook) {
             pieceToReturn = new Rook();
+        }
+        if (piece instanceof Knight) {
+            pieceToReturn = new Knight();
         }
         return pieceToReturn;
     }
@@ -268,9 +283,12 @@ public class Analyser {
      * Builder class for the Analyzer
      */
     public static class Builder {
+
+        // TODO add method
         private final int[][] board;
         private int kings;
         private int rooks;
+        private int knights;
 
         /**
          * Initialize the builder with the size of the board
@@ -304,6 +322,18 @@ public class Analyser {
         public Builder withRooks(int rooks) {
             throwExceptionWithNegativeQuantities(rooks);
             this.rooks = rooks;
+            return this;
+        }
+
+        /**
+         * The selected number of knights
+         *
+         * @param knights the quantity of this type
+         * @return the builder
+         */
+        public Builder withKnights(int knights) {
+            throwExceptionWithNegativeQuantities(knights);
+            this.knights = knights;
             return this;
         }
 

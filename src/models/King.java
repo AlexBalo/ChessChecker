@@ -1,5 +1,7 @@
 package models;
 
+import utils.PieceUtils;
+
 import java.util.List;
 
 /**
@@ -12,13 +14,13 @@ public class King extends Piece {
     }
 
     @Override
-    public String getInitial() {
+    public String getIdentifier() {
         return " K ";
     }
 
     @Override
     public void calculateEatableSpots(int rowIndex, int columnIndex, boolean[][] boardSpots) {
-        executeBoardOperations(rowIndex, columnIndex, boardSpots);
+        markUnavailableSpots(rowIndex, columnIndex, boardSpots);
     }
 
     @Override
@@ -38,7 +40,7 @@ public class King extends Piece {
         return false;
     }
 
-    private void executeBoardOperations(int rowIndex, int columnIndex, boolean[][] boardSpots) {
+    private void markUnavailableSpots(int rowIndex, int columnIndex, boolean[][] boardSpots) {
         int rowsLength = boardSpots.length;
         int columnsLength = boardSpots[0].length;
 
@@ -49,42 +51,42 @@ public class King extends Piece {
 
         // Top left
         if (validLeftColumn && validTopRow) {
-            markSpotAsTaken(rowIndex - 1, columnIndex - 1, boardSpots);
+            PieceUtils.markSpotAsTaken(rowIndex - 1, columnIndex - 1, boardSpots);
         }
 
         // Top
         if (validTopRow) {
-            markSpotAsTaken(rowIndex - 1, columnIndex, boardSpots);
+            PieceUtils.markSpotAsTaken(rowIndex - 1, columnIndex, boardSpots);
         }
 
         // Top right
         if (validTopRow && validRightColumn) {
-            markSpotAsTaken(rowIndex - 1, columnIndex + 1, boardSpots);
+            PieceUtils.markSpotAsTaken(rowIndex - 1, columnIndex + 1, boardSpots);
         }
 
         // Right
         if (validRightColumn) {
-            markSpotAsTaken(rowIndex, columnIndex + 1, boardSpots);
+            PieceUtils.markSpotAsTaken(rowIndex, columnIndex + 1, boardSpots);
         }
 
         // Bottom right
         if (validBottomRow && validRightColumn) {
-            markSpotAsTaken(rowIndex + 1, columnIndex + 1, boardSpots);
+            PieceUtils.markSpotAsTaken(rowIndex + 1, columnIndex + 1, boardSpots);
         }
 
         // Bottom
         if (validBottomRow) {
-            markSpotAsTaken(rowIndex + 1, columnIndex, boardSpots);
+            PieceUtils.markSpotAsTaken(rowIndex + 1, columnIndex, boardSpots);
         }
 
         // Bottom left
         if (validLeftColumn && validBottomRow) {
-            markSpotAsTaken(rowIndex + 1, columnIndex - 1, boardSpots);
+            PieceUtils.markSpotAsTaken(rowIndex + 1, columnIndex - 1, boardSpots);
         }
 
         // Left
         if (validLeftColumn) {
-            markSpotAsTaken(rowIndex, columnIndex - 1, boardSpots);
+            PieceUtils.markSpotAsTaken(rowIndex, columnIndex - 1, boardSpots);
         }
     }
 
@@ -105,56 +107,43 @@ public class King extends Piece {
 
         // Top left
         if (validLeftColumn && validTopRow) {
-            canTakeSpot = canTakeSpot(rowIndex - 1, columnIndex - 1, placedPieces);
+            canTakeSpot = PieceUtils.canTakeSpot(rowIndex - 1, columnIndex - 1, placedPieces);
         }
 
         // Top
         if (canTakeSpot && validTopRow) {
-            canTakeSpot = canTakeSpot(rowIndex - 1, columnIndex, placedPieces);
+            canTakeSpot = PieceUtils.canTakeSpot(rowIndex - 1, columnIndex, placedPieces);
         }
 
         // Top right
         if (canTakeSpot && validTopRow && validRightColumn) {
-            canTakeSpot = canTakeSpot(rowIndex - 1, columnIndex + 1, placedPieces);
+            canTakeSpot = PieceUtils.canTakeSpot(rowIndex - 1, columnIndex + 1, placedPieces);
         }
 
         // Right
         if (canTakeSpot && validRightColumn) {
-            canTakeSpot = canTakeSpot(rowIndex, columnIndex + 1, placedPieces);
+            canTakeSpot = PieceUtils.canTakeSpot(rowIndex, columnIndex + 1, placedPieces);
         }
 
         // Bottom right
         if (canTakeSpot && validBottomRow && validRightColumn) {
-            canTakeSpot = canTakeSpot(rowIndex + 1, columnIndex + 1, placedPieces);
+            canTakeSpot = PieceUtils.canTakeSpot(rowIndex + 1, columnIndex + 1, placedPieces);
         }
 
         // Bottom
         if (canTakeSpot && validBottomRow) {
-            canTakeSpot = canTakeSpot(rowIndex + 1, columnIndex, placedPieces);
+            canTakeSpot = PieceUtils.canTakeSpot(rowIndex + 1, columnIndex, placedPieces);
         }
 
         // Bottom left
         if (canTakeSpot && validLeftColumn && validBottomRow) {
-            canTakeSpot = canTakeSpot(rowIndex + 1, columnIndex - 1, placedPieces);
+            canTakeSpot = PieceUtils.canTakeSpot(rowIndex + 1, columnIndex - 1, placedPieces);
         }
 
         // Left
         if (canTakeSpot && validLeftColumn) {
-            canTakeSpot = canTakeSpot(rowIndex, columnIndex - 1, placedPieces);
+            canTakeSpot = PieceUtils.canTakeSpot(rowIndex, columnIndex - 1, placedPieces);
         }
         return canTakeSpot;
-    }
-
-    private void markSpotAsTaken(int rowIndex, int columnIndex, boolean[][] boardSpots) {
-        boardSpots[rowIndex][columnIndex] = true;
-    }
-
-    private boolean canTakeSpot(int rowIndex, int columnIndex, List<Piece> placesPieces) {
-        for (Piece piece : placesPieces) {
-            if (piece.getRow() == rowIndex && piece.getColumn() == columnIndex) {
-                return false;
-            }
-        }
-        return true;
     }
 }

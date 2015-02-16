@@ -39,7 +39,7 @@ public abstract class Piece {
      *
      * @return a String that identify the piece on the board
      */
-    public abstract String getInitial();
+    public abstract String getIdentifier();
 
     /**
      * This method calculates the cells that can be eaten by the piece. It is used to determine
@@ -62,5 +62,6 @@ public abstract class Piece {
      *
      * @return true if the suggested spot is available and can be occupied
      */
-    public abstract boolean canPieceTakeSpot(int rowIndex, int columnIndex, boolean[][] boardSpots, List<Piece> placesPieces);
+    public abstract boolean canPieceTakeSpot(int rowIndex, int columnIndex, boolean[][] boardSpots,
+                                             List<Piece> placesPieces);
 }

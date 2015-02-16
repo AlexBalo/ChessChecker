@@ -1,5 +1,7 @@
 package models;
 
+import utils.PieceUtils;
+
 import java.util.List;
 
 /**
@@ -12,13 +14,13 @@ public class Rook extends Piece {
     }
 
     @Override
-    public String getInitial() {
+    public String getIdentifier() {
         return " R ";
     }
 
     @Override
     public void calculateEatableSpots(int rowIndex, int columnIndex, boolean[][] boardSpots) {
-        executeBoardOperations(rowIndex, columnIndex, boardSpots);
+        markUnavailableSpots(rowIndex, columnIndex, boardSpots);
     }
 
     @Override
@@ -38,28 +40,28 @@ public class Rook extends Piece {
         return false;
     }
 
-    private void executeBoardOperations(int rowIndex, int columnIndex, boolean[][] boardSpots) {
+    private void markUnavailableSpots(int rowIndex, int columnIndex, boolean[][] boardSpots) {
         int rowsLength = boardSpots.length;
         int columnsLength = boardSpots[0].length;
 
         // Left
         for (int i = 0; i < columnIndex; i++) {
-            markSpotAsTaken(rowIndex, i, boardSpots);
+            PieceUtils.markSpotAsTaken(rowIndex, i, boardSpots);
         }
 
         // Top
         for (int i = 0; i < rowIndex; i++) {
-            markSpotAsTaken(i, columnIndex, boardSpots);
+            PieceUtils.markSpotAsTaken(i, columnIndex, boardSpots);
         }
 
         // Right
         for (int i = columnIndex; i < columnsLength; i++) {
-            markSpotAsTaken(rowIndex, i, boardSpots);
+            PieceUtils.markSpotAsTaken(rowIndex, i, boardSpots);
         }
 
         // Bottom
         for (int i = rowIndex; i < rowsLength; i++) {
-            markSpotAsTaken(i, columnIndex, boardSpots);
+            PieceUtils.markSpotAsTaken(i, columnIndex, boardSpots);
         }
     }
 
@@ -75,7 +77,7 @@ public class Rook extends Piece {
 
         // Left
         for (int i = 0; i < columnIndex; i++) {
-            canTakeSpot = canTakeSpot(rowIndex, i, placedPieces);
+            canTakeSpot = PieceUtils.canTakeSpot(rowIndex, i, placedPieces);
             if (!canTakeSpot) {
                 return false;
             }
@@ -83,7 +85,7 @@ public class Rook extends Piece {
 
         // Top
         for (int i = 0; i < rowIndex; i++) {
-            canTakeSpot = canTakeSpot(i, columnIndex, placedPieces);
+            canTakeSpot = PieceUtils.canTakeSpot(i, columnIndex, placedPieces);
             if (!canTakeSpot) {
                 return false;
             }
@@ -91,7 +93,7 @@ public class Rook extends Piece {
 
         // Right
         for (int i = columnIndex; i < columnsLength; i++) {
-            canTakeSpot = canTakeSpot(rowIndex, i, placedPieces);
+            canTakeSpot = PieceUtils.canTakeSpot(rowIndex, i, placedPieces);
             if (!canTakeSpot) {
                 return false;
             }
@@ -99,21 +101,8 @@ public class Rook extends Piece {
 
         // Bottom
         for (int i = rowIndex; i < rowsLength; i++) {
-            canTakeSpot = canTakeSpot(i, columnIndex, placedPieces);
+            canTakeSpot = PieceUtils.canTakeSpot(i, columnIndex, placedPieces);
             if (!canTakeSpot) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private void markSpotAsTaken(int rowIndex, int columnIndex, boolean[][] boardSpots) {
-        boardSpots[rowIndex][columnIndex] = true;
-    }
-
-    private boolean canTakeSpot(int rowIndex, int columnIndex, List<Piece> placesPieces) {
-        for (Piece piece : placesPieces) {
-            if (piece.getRow() == rowIndex && piece.getColumn() == columnIndex) {
                 return false;
             }
         }

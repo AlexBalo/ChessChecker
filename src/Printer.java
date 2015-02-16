@@ -116,7 +116,7 @@ public class Printer {
                 }
 
                 Piece piece = piecesBoard[i][j - 1];
-                String value = piece == null ? " - " : piece.getInitial();
+                String value = piece == null ? " - " : piece.getIdentifier();
                 System.out.print(value);
             }
             System.out.println("");

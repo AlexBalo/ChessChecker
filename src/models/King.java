@@ -1,6 +1,6 @@
 package models;
 
-import utils.PieceUtils;
+import utils.BoardUtils;
 
 import java.util.List;
 
@@ -51,42 +51,42 @@ public class King extends Piece {
 
         // Top left
         if (validLeftColumn && validTopRow) {
-            PieceUtils.markSpotAsTaken(rowIndex - 1, columnIndex - 1, boardSpots);
+            BoardUtils.markSpotAsTaken(rowIndex - 1, columnIndex - 1, boardSpots);
         }
 
         // Top
         if (validTopRow) {
-            PieceUtils.markSpotAsTaken(rowIndex - 1, columnIndex, boardSpots);
+            BoardUtils.markSpotAsTaken(rowIndex - 1, columnIndex, boardSpots);
         }
 
         // Top right
         if (validTopRow && validRightColumn) {
-            PieceUtils.markSpotAsTaken(rowIndex - 1, columnIndex + 1, boardSpots);
+            BoardUtils.markSpotAsTaken(rowIndex - 1, columnIndex + 1, boardSpots);
         }
 
         // Right
         if (validRightColumn) {
-            PieceUtils.markSpotAsTaken(rowIndex, columnIndex + 1, boardSpots);
+            BoardUtils.markSpotAsTaken(rowIndex, columnIndex + 1, boardSpots);
         }
 
         // Bottom right
         if (validBottomRow && validRightColumn) {
-            PieceUtils.markSpotAsTaken(rowIndex + 1, columnIndex + 1, boardSpots);
+            BoardUtils.markSpotAsTaken(rowIndex + 1, columnIndex + 1, boardSpots);
         }
 
         // Bottom
         if (validBottomRow) {
-            PieceUtils.markSpotAsTaken(rowIndex + 1, columnIndex, boardSpots);
+            BoardUtils.markSpotAsTaken(rowIndex + 1, columnIndex, boardSpots);
         }
 
         // Bottom left
         if (validLeftColumn && validBottomRow) {
-            PieceUtils.markSpotAsTaken(rowIndex + 1, columnIndex - 1, boardSpots);
+            BoardUtils.markSpotAsTaken(rowIndex + 1, columnIndex - 1, boardSpots);
         }
 
         // Left
         if (validLeftColumn) {
-            PieceUtils.markSpotAsTaken(rowIndex, columnIndex - 1, boardSpots);
+            BoardUtils.markSpotAsTaken(rowIndex, columnIndex - 1, boardSpots);
         }
     }
 
@@ -103,47 +103,62 @@ public class King extends Piece {
         boolean validTopRow = rowIndex - 1 >= 0;
         boolean validRightColumn = columnIndex + 1 < columnsLength;
         boolean validBottomRow = rowIndex + 1 < rowsLength;
-        boolean canTakeSpot = true;
 
         // Top left
         if (validLeftColumn && validTopRow) {
-            canTakeSpot = PieceUtils.canTakeSpot(rowIndex - 1, columnIndex - 1, placedPieces);
+            if (!BoardUtils.canPieceTakeSpot(rowIndex - 1, columnIndex - 1, placedPieces)) {
+                return false;
+            }
         }
 
         // Top
-        if (canTakeSpot && validTopRow) {
-            canTakeSpot = PieceUtils.canTakeSpot(rowIndex - 1, columnIndex, placedPieces);
+        if (validTopRow) {
+            if (!BoardUtils.canPieceTakeSpot(rowIndex - 1, columnIndex, placedPieces)) {
+                return false;
+            }
         }
 
         // Top right
-        if (canTakeSpot && validTopRow && validRightColumn) {
-            canTakeSpot = PieceUtils.canTakeSpot(rowIndex - 1, columnIndex + 1, placedPieces);
+        if (validTopRow && validRightColumn) {
+            if (!BoardUtils.canPieceTakeSpot(rowIndex - 1, columnIndex + 1, placedPieces)) {
+                return false;
+            }
         }
 
         // Right
-        if (canTakeSpot && validRightColumn) {
-            canTakeSpot = PieceUtils.canTakeSpot(rowIndex, columnIndex + 1, placedPieces);
+        if (validRightColumn) {
+            if (!BoardUtils.canPieceTakeSpot(rowIndex, columnIndex + 1, placedPieces)) {
+                return false;
+            }
         }
 
         // Bottom right
-        if (canTakeSpot && validBottomRow && validRightColumn) {
-            canTakeSpot = PieceUtils.canTakeSpot(rowIndex + 1, columnIndex + 1, placedPieces);
+        if (validBottomRow && validRightColumn) {
+            if (!BoardUtils.canPieceTakeSpot(rowIndex + 1, columnIndex + 1, placedPieces)) {
+                return false;
+            }
         }
 
         // Bottom
-        if (canTakeSpot && validBottomRow) {
-            canTakeSpot = PieceUtils.canTakeSpot(rowIndex + 1, columnIndex, placedPieces);
+        if (validBottomRow) {
+            if (!BoardUtils.canPieceTakeSpot(rowIndex + 1, columnIndex, placedPieces)) {
+                return false;
+            }
         }
 
         // Bottom left
-        if (canTakeSpot && validLeftColumn && validBottomRow) {
-            canTakeSpot = PieceUtils.canTakeSpot(rowIndex + 1, columnIndex - 1, placedPieces);
+        if (validLeftColumn && validBottomRow) {
+            if (!BoardUtils.canPieceTakeSpot(rowIndex + 1, columnIndex - 1, placedPieces)) {
+                return false;
+            }
         }
 
         // Left
-        if (canTakeSpot && validLeftColumn) {
-            canTakeSpot = PieceUtils.canTakeSpot(rowIndex, columnIndex - 1, placedPieces);
+        if (validLeftColumn) {
+            if (!BoardUtils.canPieceTakeSpot(rowIndex, columnIndex - 1, placedPieces)) {
+                return false;
+            }
         }
-        return canTakeSpot;
+        return true;
     }
 }

@@ -1,41 +1,82 @@
 package utils;
 
-import models.Piece;
+import models.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by alessandro.balocco
- * This is a utility class used by the pieces to understand whether they can take some spots
- * or mark them as taken
+ * This is a utility class provides utility methods related to pieces
  */
 public class PieceUtils {
 
     /**
-     * This method is used by the pieces to mark a certain position on the board as taken
+     * Return a piece of the correct type based on the one which was considered
      *
-     * @param rowIndex    the row index of the position
-     * @param columnIndex the column index of the position
-     * @param boardSpots  the board used to check empty spots
+     * @param piece the piece to consider
+     * @return a new piece of the same type
      */
-    public static void markSpotAsTaken(int rowIndex, int columnIndex, boolean[][] boardSpots) {
-        boardSpots[rowIndex][columnIndex] = true;
+    public static Piece getPieceOfType(Piece piece) {
+        // TODO add pieces
+        Piece pieceToReturn = null;
+        if (piece instanceof King) {
+            pieceToReturn = new King();
+        }
+        if (piece instanceof Rook) {
+            pieceToReturn = new Rook();
+        }
+        if (piece instanceof Bishop) {
+            pieceToReturn = new Bishop();
+        }
+        if (piece instanceof Knight) {
+            pieceToReturn = new Knight();
+        }
+        return pieceToReturn;
     }
 
     /**
-     * This method determines if a certain spot can be taken based on the coordinates and the already placed pieces
+     * Initialize the pieces depending on Builder inputs
      *
-     * @param rowIndex     the index of the row
-     * @param columnIndex  the index of the column
-     * @param placesPieces the list of already placed pieces on the board
-     * @return true when the current piece can take the corresponding spot
+     * @return a list of pieces to place on the board
      */
-    public static boolean canTakeSpot(int rowIndex, int columnIndex, List<Piece> placesPieces) {
-        for (Piece piece : placesPieces) {
-            if (piece.getRow() == rowIndex && piece.getColumn() == columnIndex) {
-                return false;
+    public static List<Piece> initializePiecesListFromInputs(int kings, int rooks, int bishops, int knights) {
+        // TODO add pieces
+        List<Piece> pieces = new ArrayList<Piece>();
+        populateListWithPieces(PieceType.KING, kings, pieces);
+        populateListWithPieces(PieceType.ROOK, rooks, pieces);
+        populateListWithPieces(PieceType.BISHOP, bishops, pieces);
+        populateListWithPieces(PieceType.KNIGHT, knights, pieces);
+        return pieces;
+    }
+
+    /**
+     * Populate list with the input given by the user
+     *
+     * @param type     type of piece to insert
+     * @param quantity of pieces of same type
+     * @param pieces   the list to insert the pieces into
+     */
+    private static void populateListWithPieces(PieceType type, int quantity, List<Piece> pieces) {
+        if (quantity == 0) {
+            return;
+        }
+        // TODO add switch case
+        for (int i = 0; i < quantity; i++) {
+            switch (type) {
+                case KING:
+                    pieces.add(new King());
+                    break;
+                case ROOK:
+                    pieces.add(new Rook());
+                    break;
+                case BISHOP:
+                    pieces.add(new Bishop());
+                    break;
+                case KNIGHT:
+                    pieces.add(new Knight());
+                    break;
             }
         }
-        return true;
     }
 }

@@ -1,4 +1,5 @@
-import models.*;
+import models.Piece;
+import utils.PieceUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ public class Analyser {
     private int[][] board;
     private int kings;
     private int rooks;
+    private int bishops;
     private int knights;
 
     /**
@@ -37,8 +39,9 @@ public class Analyser {
         board = builder.board;
         kings = builder.kings;
         rooks = builder.rooks;
+        bishops = builder.bishops;
         knights = builder.knights;
-        checkValidity();
+        checkValidInputs();
     }
 
     /**
@@ -46,52 +49,11 @@ public class Analyser {
      *
      * @throws java.lang.RuntimeException when no pieces have been inserted
      */
-    private void checkValidity() {
+    private void checkValidInputs() {
         // TODO add control
-        int totalCount = kings + rooks + knights;
+        int totalCount = kings + rooks + bishops + knights;
         if (totalCount == 0) {
             throw new RuntimeException("At least one piece should be added");
-        }
-    }
-
-    /**
-     * Initialize the pieces depending on Builder inputs
-     *
-     * @return a list of pieces to place on the board
-     */
-    private List<Piece> initializeAvailablePieces() {
-        // TODO add pieces
-        List<Piece> pieces = new ArrayList<Piece>();
-        populateList(PieceType.KING, kings, pieces);
-        populateList(PieceType.ROOK, rooks, pieces);
-        populateList(PieceType.KNIGHT, knights, pieces);
-        return pieces;
-    }
-
-    /**
-     * Populate list with the input given by the user
-     *
-     * @param type     type of piece to insert
-     * @param quantity of pieces of same type
-     * @param pieces   the list to insert the pieces into
-     */
-    private void populateList(PieceType type, int quantity, List<Piece> pieces) {
-        if (quantity == 0) {
-            return;
-        }
-        // TODO add switch case
-        for (int i = 0; i < quantity; i++) {
-            switch (type) {
-                case KING:
-                    pieces.add(new King());
-                    break;
-                case ROOK:
-                    pieces.add(new Rook());
-                    break;
-                case KNIGHT:
-                    pieces.add(new Knight());
-                    break;
-            }
         }
     }
 
@@ -103,7 +65,7 @@ public class Analyser {
      */
     public List<Configuration> calculateConfigurations() {
         configurations = new ArrayList<Configuration>();
-        availablePieces = initializeAvailablePieces();
+        availablePieces = PieceUtils.initializePiecesListFromInputs(kings, rooks, bishops, knights);
         int rowsLength = board.length;
         for (int i = 0; i < rowsLength; i++) {
             int columnsLength = board[i].length;
@@ -218,33 +180,12 @@ public class Analyser {
      * @return the piece to be added in the configuration
      */
     private Piece getPieceToAdd(Piece piece) {
-        Piece pieceToAdd = getPieceOfType(piece);
+        Piece pieceToAdd = PieceUtils.getPieceOfType(piece);
         if (pieceToAdd != null) {
             pieceToAdd.setRow(piece.getRow());
             pieceToAdd.setColumn(piece.getColumn());
         }
         return pieceToAdd;
-    }
-
-    /**
-     * Return a piece of the correct type based on the one which was considered
-     *
-     * @param piece the piece to consider
-     * @return a new piece of the same type
-     */
-    private Piece getPieceOfType(Piece piece) {
-        Piece pieceToReturn = null;
-        // TODO add instance
-        if (piece instanceof King) {
-            pieceToReturn = new King();
-        }
-        if (piece instanceof Rook) {
-            pieceToReturn = new Rook();
-        }
-        if (piece instanceof Knight) {
-            pieceToReturn = new Knight();
-        }
-        return pieceToReturn;
     }
 
     /**
@@ -289,6 +230,7 @@ public class Analyser {
         private int kings;
         private int rooks;
         private int knights;
+        private int bishops;
 
         /**
          * Initialize the builder with the size of the board
@@ -322,6 +264,18 @@ public class Analyser {
         public Builder withRooks(int rooks) {
             throwExceptionWithNegativeQuantities(rooks);
             this.rooks = rooks;
+            return this;
+        }
+
+        /**
+         * The selected number of bishops
+         *
+         * @param bishops the quantity of this type
+         * @return the builder
+         */
+        public Builder withBishops(int bishops) {
+            throwExceptionWithNegativeQuantities(bishops);
+            this.bishops = bishops;
             return this;
         }
 

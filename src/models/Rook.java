@@ -1,6 +1,6 @@
 package models;
 
-import utils.PieceUtils;
+import utils.BoardUtils;
 
 import java.util.List;
 
@@ -46,22 +46,22 @@ public class Rook extends Piece {
 
         // Left
         for (int i = 0; i < columnIndex; i++) {
-            PieceUtils.markSpotAsTaken(rowIndex, i, boardSpots);
+            BoardUtils.markSpotAsTaken(rowIndex, i, boardSpots);
         }
 
         // Top
         for (int i = 0; i < rowIndex; i++) {
-            PieceUtils.markSpotAsTaken(i, columnIndex, boardSpots);
+            BoardUtils.markSpotAsTaken(i, columnIndex, boardSpots);
         }
 
         // Right
         for (int i = columnIndex; i < columnsLength; i++) {
-            PieceUtils.markSpotAsTaken(rowIndex, i, boardSpots);
+            BoardUtils.markSpotAsTaken(rowIndex, i, boardSpots);
         }
 
         // Bottom
         for (int i = rowIndex; i < rowsLength; i++) {
-            PieceUtils.markSpotAsTaken(i, columnIndex, boardSpots);
+            BoardUtils.markSpotAsTaken(i, columnIndex, boardSpots);
         }
     }
 
@@ -73,36 +73,31 @@ public class Rook extends Piece {
 
         int rowsLength = boardSpots.length;
         int columnsLength = boardSpots[0].length;
-        boolean canTakeSpot = true;
 
         // Left
         for (int i = 0; i < columnIndex; i++) {
-            canTakeSpot = PieceUtils.canTakeSpot(rowIndex, i, placedPieces);
-            if (!canTakeSpot) {
+            if (!BoardUtils.canPieceTakeSpot(rowIndex, i, placedPieces)) {
                 return false;
             }
         }
 
         // Top
         for (int i = 0; i < rowIndex; i++) {
-            canTakeSpot = PieceUtils.canTakeSpot(i, columnIndex, placedPieces);
-            if (!canTakeSpot) {
+            if (!BoardUtils.canPieceTakeSpot(i, columnIndex, placedPieces)) {
                 return false;
             }
         }
 
         // Right
         for (int i = columnIndex; i < columnsLength; i++) {
-            canTakeSpot = PieceUtils.canTakeSpot(rowIndex, i, placedPieces);
-            if (!canTakeSpot) {
+            if (!BoardUtils.canPieceTakeSpot(rowIndex, i, placedPieces)) {
                 return false;
             }
         }
 
         // Bottom
         for (int i = rowIndex; i < rowsLength; i++) {
-            canTakeSpot = PieceUtils.canTakeSpot(i, columnIndex, placedPieces);
-            if (!canTakeSpot) {
+            if (!BoardUtils.canPieceTakeSpot(i, columnIndex, placedPieces)) {
                 return false;
             }
         }

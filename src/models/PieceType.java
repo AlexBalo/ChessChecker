@@ -7,5 +7,6 @@ package models;
 public enum PieceType {
     KING,
     ROOK,
+    BISHOP,
     KNIGHT
 }

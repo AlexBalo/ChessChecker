@@ -17,6 +17,7 @@ public class Main {
         Analyser analyser = new Analyser.Builder(BOARD_SIZE, BOARD_SIZE)
                 .withKings(KINGS)
                 .withRooks(ROOKS)
+                .withBishops(BISHOPS)
                 .withKnights(KNIGHTS)
                 .build();
 

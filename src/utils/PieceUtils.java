@@ -18,13 +18,15 @@ public class PieceUtils {
      * @return a new piece of the same type
      */
     public static Piece getPieceOfType(Piece piece) {
-        // TODO add pieces
         Piece pieceToReturn = null;
         if (piece instanceof King) {
             pieceToReturn = new King();
         }
         if (piece instanceof Rook) {
             pieceToReturn = new Rook();
+        }
+        if (piece instanceof Queen) {
+            pieceToReturn = new Queen();
         }
         if (piece instanceof Bishop) {
             pieceToReturn = new Bishop();
@@ -40,11 +42,11 @@ public class PieceUtils {
      *
      * @return a list of pieces to place on the board
      */
-    public static List<Piece> initializePiecesListFromInputs(int kings, int rooks, int bishops, int knights) {
-        // TODO add pieces
+    public static List<Piece> initializePiecesListFromInputs(int kings, int rooks, int queens, int bishops, int knights) {
         List<Piece> pieces = new ArrayList<Piece>();
         populateListWithPieces(PieceType.KING, kings, pieces);
         populateListWithPieces(PieceType.ROOK, rooks, pieces);
+        populateListWithPieces(PieceType.QUEEN, queens, pieces);
         populateListWithPieces(PieceType.BISHOP, bishops, pieces);
         populateListWithPieces(PieceType.KNIGHT, knights, pieces);
         return pieces;
@@ -61,7 +63,6 @@ public class PieceUtils {
         if (quantity == 0) {
             return;
         }
-        // TODO add switch case
         for (int i = 0; i < quantity; i++) {
             switch (type) {
                 case KING:
@@ -69,6 +70,9 @@ public class PieceUtils {
                     break;
                 case ROOK:
                     pieces.add(new Rook());
+                    break;
+                case QUEEN:
+                    pieces.add(new Queen());
                     break;
                 case BISHOP:
                     pieces.add(new Bishop());

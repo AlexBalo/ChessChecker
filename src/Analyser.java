@@ -14,6 +14,7 @@ public class Analyser {
     private int[][] board;
     private int kings;
     private int rooks;
+    private int queens;
     private int bishops;
     private int knights;
 
@@ -39,6 +40,7 @@ public class Analyser {
         board = builder.board;
         kings = builder.kings;
         rooks = builder.rooks;
+        queens = builder.queens;
         bishops = builder.bishops;
         knights = builder.knights;
         checkValidInputs();
@@ -50,8 +52,7 @@ public class Analyser {
      * @throws java.lang.RuntimeException when no pieces have been inserted
      */
     private void checkValidInputs() {
-        // TODO add control
-        int totalCount = kings + rooks + bishops + knights;
+        int totalCount = kings + rooks + queens + bishops + knights;
         if (totalCount == 0) {
             throw new RuntimeException("At least one piece should be added");
         }
@@ -65,7 +66,7 @@ public class Analyser {
      */
     public List<Configuration> calculateConfigurations() {
         configurations = new ArrayList<Configuration>();
-        availablePieces = PieceUtils.initializePiecesListFromInputs(kings, rooks, bishops, knights);
+        availablePieces = PieceUtils.initializePiecesListFromInputs(kings, rooks, queens, bishops, knights);
         int rowsLength = board.length;
         for (int i = 0; i < rowsLength; i++) {
             int columnsLength = board[i].length;
@@ -225,12 +226,12 @@ public class Analyser {
      */
     public static class Builder {
 
-        // TODO add method
         private final int[][] board;
         private int kings;
         private int rooks;
-        private int knights;
+        private int queens;
         private int bishops;
+        private int knights;
 
         /**
          * Initialize the builder with the size of the board
@@ -264,6 +265,18 @@ public class Analyser {
         public Builder withRooks(int rooks) {
             throwExceptionWithNegativeQuantities(rooks);
             this.rooks = rooks;
+            return this;
+        }
+
+        /**
+         * The selected number of queens
+         *
+         * @param queens the quantity of this type
+         * @return the builder
+         */
+        public Builder withQueens(int queens) {
+            throwExceptionWithNegativeQuantities(queens);
+            this.queens = queens;
             return this;
         }
 

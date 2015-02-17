@@ -46,10 +46,15 @@ public class Configuration {
     public boolean isContainingSamePieces(List<Piece> piecesToAdd) {
         int equalsItem = 0;
         for (Piece savedPiece : pieces) {
+            int equalsInConfig = 0;
             for (Piece pieceToBeSaved : piecesToAdd) {
                 if (savedPiece.equals(pieceToBeSaved)) {
+                    equalsInConfig++;
                     equalsItem++;
                 }
+            }
+            if (equalsInConfig == 0) {
+                return false;
             }
         }
         return equalsItem == piecesToAdd.size();

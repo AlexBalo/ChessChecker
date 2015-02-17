@@ -13,6 +13,39 @@ public class Printer {
 
     /**
      * Print the input of the test
+     */
+    public void printTime(long startTime, long endTime) {
+        long gap = endTime - startTime;
+
+        int hours = (int) ((gap / (1000 * 60 * 60)) % 24);
+        int minutes = (int) ((gap / (1000 * 60)) % 60);
+        int seconds = (int) (gap / 1000) % 60;
+
+        StringBuilder timeString = new StringBuilder("Calculation time: ");
+        if (hours > 0) {
+            String hourString = hours > 1 ? hours + " Hours " : hours + " Hour ";
+            timeString.append(hourString);
+        }
+        if (minutes > 0) {
+            String minuteString = minutes > 1 ? minutes + " Minutes " : minutes + " Minute ";
+            timeString.append(minuteString);
+        }
+        if (seconds > 0) {
+            String secondString = seconds > 1 ? seconds + " Seconds " : seconds + " Second ";
+            timeString.append(secondString);
+        }
+
+        if (hours == 0 && minutes == 0 && seconds == 0) {
+            timeString = new StringBuilder("Calculation time: ");
+            timeString.append("less than a second.");
+        }
+
+        System.out.println("");
+        System.out.println(timeString.toString());
+    }
+
+    /**
+     * Print the input of the test
      *
      * @param boardSize the dimension of the board
      * @param kings     the quantity of kings
@@ -27,11 +60,11 @@ public class Printer {
         String firstPart = "Board with dimension: " + boardSize + "x" + boardSize + " containing ";
         builder.append(firstPart);
         if (kings > 0) {
-            String kingNumber = kings > 1 ? kings + " Kings " : kings + "King ";
+            String kingNumber = kings > 1 ? kings + " Kings " : kings + " King ";
             builder.append(kingNumber);
         }
         if (rooks > 0) {
-            String rooksNumber = rooks > 1 ? rooks + " Rooks " : rooks + "Rook ";
+            String rooksNumber = rooks > 1 ? rooks + " Rooks " : rooks + " Rook ";
             builder.append(rooksNumber);
         }
         if (queens > 0) {
@@ -39,11 +72,11 @@ public class Printer {
             builder.append(queensNumber);
         }
         if (bishops > 0) {
-            String bishopsNumber = bishops > 1 ? bishops + " Bishops" : bishops + "Bishop ";
+            String bishopsNumber = bishops > 1 ? bishops + " Bishops " : bishops + "Bishop ";
             builder.append(bishopsNumber);
         }
         if (knights > 0) {
-            String knightsNumber = knights > 1 ? knights + " Knights" : knights + "Knight";
+            String knightsNumber = knights > 1 ? knights + " Knights " : knights + " Knight ";
             builder.append(knightsNumber);
         }
         System.out.println(builder.toString());
@@ -66,12 +99,13 @@ public class Printer {
         }
 
         System.out.println("Total number of configurations: " + configurationsSize);
+        /*
         for (Configuration configuration : configurations) {
             counter++;
             System.out.println("# " + counter);
             populateBoard(configuration);
             System.out.println("----------------------");
-        }
+        }*/
     }
 
     /**

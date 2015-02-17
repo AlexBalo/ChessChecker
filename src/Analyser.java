@@ -12,6 +12,7 @@ public class Analyser {
 
     /* The inputs provided by the user */
     private int[][] board;
+    private boolean[][] availableSpots;
     private int kings;
     private int rooks;
     private int queens;
@@ -67,41 +68,11 @@ public class Analyser {
     public List<Configuration> calculateConfigurations() {
         configurations = new ArrayList<Configuration>();
         availablePieces = PieceUtils.initializePiecesListFromInputs(kings, rooks, queens, bishops, knights);
-        int rowsLength = board.length;
-        for (int i = 0; i < rowsLength; i++) {
-            int columnsLength = board[i].length;
-            for (int j = 0; j < columnsLength; j++) {
-                configurationPieces = new ArrayList<Piece>();
-                initConfigurationResearch(i, j);
-            }
-        }
+        availableSpots = new boolean[board.length][board[0].length];
+        configurationPieces = new ArrayList<Piece>();
+        searchAvailableConfigurations(0);
 
         return configurations;
-    }
-
-    /**
-     * Every time this method is called it means that the first item has changed its position.
-     * It also means that we can consider the first item as first item of the configuration.
-     * After that it starts looping looking for possible combinations
-     *
-     * @param row    the index of the row of the first item
-     * @param column the index of the column of the first item
-     */
-    private void initConfigurationResearch(int row, int column) {
-        Piece piece = availablePieces.get(0);
-        piece.setRow(row);
-        piece.setColumn(column);
-
-        Piece pieceToAdd = getPieceToAdd(piece);
-        configurationPieces.add(pieceToAdd);
-
-        int size = availablePieces.size();
-        if (size > 1) {
-            int indexToStartSearchingFor = 1;
-            searchAvailableConfigurations(indexToStartSearchingFor);
-        } else {
-            createConfiguration();
-        }
     }
 
     /**
@@ -116,10 +87,13 @@ public class Analyser {
         for (int i = 0; i < rowsLength; i++) {
             int columnsLength = board[i].length;
             for (int j = 0; j < columnsLength; j++) {
+                // TODO: Remove it, it's just for test purposes
+                if (currentIndex == 0) {
+                    System.out.println("row: " + i + " - column: " + j);
+                }
                 cleanTmpPiecesListIfNecessary(currentIndex);
 
                 Piece piece = availablePieces.get(currentIndex);
-                boolean[][] availableSpots = calculateAvailableSpots();
                 boolean spotTaken = availableSpots[i][j];
                 boolean canPieceTakeSpot = piece.canPieceTakeSpot(i, j, availableSpots, configurationPieces);
                 if (spotTaken || !canPieceTakeSpot) {
@@ -129,14 +103,13 @@ public class Analyser {
                 piece.setRow(i);
                 piece.setColumn(j);
                 Piece pieceToAdd = getPieceToAdd(piece);
-
-                configurationPieces.add(pieceToAdd);
+                addPieceToConfiguration(pieceToAdd);
 
                 int configurationSize = configurationPieces.size();
                 int availableSize = availablePieces.size();
                 if (configurationSize == availableSize) {
                     createConfiguration();
-                    configurationPieces.remove(currentIndex);
+                    removePieceFromConfiguration(currentIndex);
                 } else {
                     searchAvailableConfigurations(currentIndex + 1);
                 }
@@ -146,6 +119,16 @@ public class Analyser {
         cleanTmpPiecesListIfNecessary(currentIndex);
     }
 
+    private void addPieceToConfiguration(Piece piece) {
+        configurationPieces.add(piece);
+        availableSpots = calculateAvailableSpots();
+    }
+
+    private void removePieceFromConfiguration(int index) {
+        configurationPieces.remove(index);
+        availableSpots = calculateAvailableSpots();
+    }
+
     /**
      * This method is in charge of keeping the list of pieces clean and up to date with the configuration
      *
@@ -153,7 +136,7 @@ public class Analyser {
      */
     private void cleanTmpPiecesListIfNecessary(int currentIndex) {
         if (configurationPieces.size() == (currentIndex + 1)) {
-            configurationPieces.remove(currentIndex);
+            removePieceFromConfiguration(currentIndex);
         }
     }
 

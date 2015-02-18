@@ -1,9 +1,7 @@
 import models.Piece;
 import utils.PieceUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by alessandro.balocco
@@ -20,7 +18,7 @@ public class Analyser {
     private int bishops;
     private int knights;
 
-    private List<Integer> configurationCodes;
+    private Map<String, List<Integer>> configurationCodes;
 
     /**
      * The list of available configurations to be returned
@@ -72,10 +70,15 @@ public class Analyser {
         configurations = new ArrayList<Configuration>();
         availablePieces = PieceUtils.initializePiecesListFromInputs(kings, rooks, queens, bishops, knights);
         availableSpots = new boolean[board.length][board[0].length];
-        configurationCodes = new ArrayList<Integer>();
+        configurationCodes = new HashMap<String, List<Integer>>();
         configurationPieces = new ArrayList<Piece>();
         searchAvailableConfigurations(0);
 
+        int count = 0;
+        for (Map.Entry<String, List<Integer>> entry : configurationCodes.entrySet()) {
+            count += entry.getValue().size();
+        }
+        System.out.println("Total configurations " + count);
         return configurations;
     }
 
@@ -189,13 +192,25 @@ public class Analyser {
         List<Piece> freshConfiguration = new ArrayList<Piece>(configurationPieces);
         Collections.sort(freshConfiguration, Piece.PositionPieceComparator);
         String configString = generateStringFromConfig(freshConfiguration);
-        if (configurationCodes.contains(configString.hashCode())) {
-            return;
+        String key = configString.substring(0, 16);
+        List<Integer> listToCheck = configurationCodes.get(key);
+        if (listToCheck != null) {
+            if (!listToCheck.contains(configString.hashCode())) {
+                listToCheck.add(configString.hashCode());
+                configurationCodes.put(key, listToCheck);
+                //addNewConfiguration(freshConfiguration);
+            }
+        } else {
+            listToCheck = new ArrayList<Integer>();
+            listToCheck.add(configString.hashCode());
+            configurationCodes.put(key, listToCheck);
+            //addNewConfiguration(freshConfiguration);
         }
+    }
 
+    private void addNewConfiguration(List<Piece> newConfiguration) {
         Configuration configuration = new Configuration();
-        configuration.setPieces(freshConfiguration);
-        configurationCodes.add(configString.hashCode());
+        configuration.setPieces(newConfiguration);
         configurations.add(configuration);
     }
 

@@ -15,7 +15,7 @@ public class Main {
     public static void main(String[] args) {
         Printer printer = new Printer();
         long startTime = System.currentTimeMillis();
-        Analyser analyser = new Analyser.Builder(BOARD_SIZE, BOARD_SIZE)
+        Analyser analyzer = new Analyser.Builder(BOARD_SIZE, BOARD_SIZE)
                 .withKings(KINGS)
                 .withRooks(ROOKS)
                 .withQueens(QUEENS)
@@ -23,11 +23,11 @@ public class Main {
                 .withKnights(KNIGHTS)
                 .build();
 
-        List<Configuration> configurations = analyser.calculateConfigurations();
+        List<Configuration> configurations = analyzer.calculateConfigurations();
         long endTime = System.currentTimeMillis();
 
         printer.printInput(BOARD_SIZE, KINGS, ROOKS, QUEENS, BISHOPS, KNIGHTS);
         printer.printTime(startTime, endTime);
-        printer.printOutput(configurations);
+        printer.printOutput(BOARD_SIZE, configurations);
     }
 }

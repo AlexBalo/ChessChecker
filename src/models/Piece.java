@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -64,4 +65,23 @@ public abstract class Piece {
      */
     public abstract boolean canPieceTakeSpot(int rowIndex, int columnIndex, boolean[][] boardSpots,
                                              List<Piece> placesPieces);
+
+    public static Comparator<Piece> PositionPieceComparator = new Comparator<Piece>() {
+
+        public int compare(Piece piece1, Piece piece2) {
+
+            Integer row1 = piece1.getRow();
+            Integer row2 = piece2.getRow();
+            int sComp = row1.compareTo(row2);
+
+            if (sComp != 0) {
+                return sComp;
+            } else {
+                Integer column1 = piece1.getColumn();
+                Integer column2 = piece2.getColumn();
+                return column1.compareTo(column2);
+            }
+        }
+
+    };
 }

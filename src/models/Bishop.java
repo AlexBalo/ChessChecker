@@ -28,18 +28,6 @@ public class Bishop extends Piece {
         return canPieceTakeThisSpot(rowIndex, columnIndex, boardSpots, placesPieces);
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof Bishop) {
-            Bishop that = (Bishop) obj;
-            return (row == that.row && column == that.column);
-        }
-        return false;
-    }
-
     private void markUnavailableSpots(int rowIndex, int columnIndex, boolean[][] boardSpots) {
         int rowsLength = boardSpots.length;
         int columnsLength = boardSpots[0].length;

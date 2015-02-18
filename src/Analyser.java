@@ -2,6 +2,7 @@ import models.Piece;
 import utils.PieceUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,6 +19,8 @@ public class Analyser {
     private int queens;
     private int bishops;
     private int knights;
+
+    private List<Integer> configurationCodes;
 
     /**
      * The list of available configurations to be returned
@@ -69,6 +72,7 @@ public class Analyser {
         configurations = new ArrayList<Configuration>();
         availablePieces = PieceUtils.initializePiecesListFromInputs(kings, rooks, queens, bishops, knights);
         availableSpots = new boolean[board.length][board[0].length];
+        configurationCodes = new ArrayList<Integer>();
         configurationPieces = new ArrayList<Piece>();
         searchAvailableConfigurations(0);
 
@@ -95,8 +99,12 @@ public class Analyser {
 
                 Piece piece = availablePieces.get(currentIndex);
                 boolean spotTaken = availableSpots[i][j];
+                if (spotTaken) {
+                    continue;
+                }
+
                 boolean canPieceTakeSpot = piece.canPieceTakeSpot(i, j, availableSpots, configurationPieces);
-                if (spotTaken || !canPieceTakeSpot) {
+                if (!canPieceTakeSpot) {
                     continue;
                 }
 
@@ -144,7 +152,7 @@ public class Analyser {
      * This method calculates the available spots in order to understand where a piece can be placed.
      * It considers both the position of the other pieces and their safe zones
      *
-     * @return a map of boolean to indicate wheter the cell is free or not
+     * @return a map of boolean to indicate whether the cell is free or not
      */
     private boolean[][] calculateAvailableSpots() {
         boolean[][] availableSpots = new boolean[board.length][board[0].length];
@@ -178,30 +186,25 @@ public class Analyser {
      * In that case no configuration is added
      */
     private void createConfiguration() {
-        if (configurationAlreadyExists()) {
+        List<Piece> freshConfiguration = new ArrayList<Piece>(configurationPieces);
+        Collections.sort(freshConfiguration, Piece.PositionPieceComparator);
+        String configString = generateStringFromConfig(freshConfiguration);
+        if (configurationCodes.contains(configString.hashCode())) {
             return;
         }
 
-        Configuration configuration = new Configuration(board);
-        List<Piece> configurationPiecesList = new ArrayList<Piece>();
-        configurationPiecesList.addAll(configurationPieces);
-        configuration.setPieces(configurationPiecesList);
+        Configuration configuration = new Configuration();
+        configuration.setPieces(freshConfiguration);
+        configurationCodes.add(configString.hashCode());
         configurations.add(configuration);
     }
 
-    /**
-     * This method checks if a configuration which has the pieces in the same position already exists
-     *
-     * @return true whether the same configuration already exists
-     */
-    private boolean configurationAlreadyExists() {
-        for (Configuration configuration : configurations) {
-            boolean alreadyContainConfig = configuration.isContainingSamePieces(configurationPieces);
-            if (alreadyContainConfig) {
-                return true;
-            }
+    private String generateStringFromConfig(List<Piece> configurationPiecesList) {
+        String string = "";
+        for (Piece piece : configurationPiecesList) {
+            string += piece.getIdentifier() + piece.getRow() + piece.getColumn();
         }
-        return false;
+        return string;
     }
 
     /**

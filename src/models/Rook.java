@@ -28,18 +28,6 @@ public class Rook extends Piece {
         return canPieceTakeThisSpot(rowIndex, columnIndex, boardSpots, placesPieces);
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof Rook) {
-            Rook that = (Rook) obj;
-            return (row == that.row && column == that.column);
-        }
-        return false;
-    }
-
     private void markUnavailableSpots(int rowIndex, int columnIndex, boolean[][] boardSpots) {
         int rowsLength = boardSpots.length;
         int columnsLength = boardSpots[0].length;

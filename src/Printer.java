@@ -85,9 +85,10 @@ public class Printer {
     /**
      * This method prints the output of the test
      *
+     * @param boardSize     the size of the board
      * @param configurations the configurations that need to be printed
      */
-    public void printOutput(List<Configuration> configurations) {
+    public void printOutput(int boardSize, List<Configuration> configurations) {
         int counter = 0;
         int configurationsSize = configurations.size();
 
@@ -113,10 +114,9 @@ public class Printer {
      *
      * @param configuration the configuration to use to populate the board
      */
-    private void populateBoard(Configuration configuration) {
-        int[][] board = configuration.getBoard();
+    private void populateBoard(int boardSize, Configuration configuration) {
         List<Piece> placedPieces = configuration.getPieces();
-        Piece[][] piecesBoard = new Piece[board.length][board[0].length];
+        Piece[][] piecesBoard = new Piece[boardSize][boardSize];
         for (Piece piece : placedPieces) {
             piecesBoard[piece.getRow()][piece.getColumn()] = piece;
         }

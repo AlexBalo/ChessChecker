@@ -9,21 +9,38 @@ import java.util.*;
  */
 public class Analyser {
 
-    /* The inputs provided by the user */
-    private int[][] board;
-    private boolean[][] availableSpots;
-    private int kings;
-    private int rooks;
-    private int queens;
-    private int bishops;
-    private int knights;
+    /**
+     * This constant is used to identify the string length of a piece (ex: Q 23)
+     */
+    private static final int PIECE_STRING_LENGTH = 5;
 
-    private Map<String, List<Integer>> configurationCodes;
+    /* The inputs provided by the user */
+    private final int[][] board;
+    private final int kings;
+    private final int rooks;
+    private final int queens;
+    private final int bishops;
+    private final int knights;
+    private final boolean printConfigurations;
 
     /**
-     * The list of available configurations to be returned
+     * An instance of the printer and a configuration counter. When user decide to have graphical representations
      */
-    private List<Configuration> configurations;
+    private int configurationCounter;
+    private Printer printer;
+    private int boardSize;
+    /**
+     * This variable identifies the max length for map keys depending on user input
+     */
+    private int limitForMapKey;
+    /**
+     * The matrix of available spots that gets updated. It is useful to search for configurations
+     */
+    private boolean[][] availableSpots;
+    /**
+     * The map of configurations. Keys are defined based on user inputs
+     */
+    private Map<String, List<Integer>> configurationsMap;
     /**
      * The list that contains all the pieces related to a specific configuration
      */
@@ -45,7 +62,9 @@ public class Analyser {
         queens = builder.queens;
         bishops = builder.bishops;
         knights = builder.knights;
+        printConfigurations = builder.printConfigurations;
         checkValidInputs();
+        initializePrinterIfNeeded();
     }
 
     /**
@@ -61,25 +80,45 @@ public class Analyser {
     }
 
     /**
-     * This method calculate all the possible configurations it starts from the top left
-     * corner and starts searching for configurations
-     *
-     * @return a list with all the configurations or empty when nothing was found
+     * This method initialize the printer when needed based on user input
      */
-    public List<Configuration> calculateConfigurations() {
-        configurations = new ArrayList<Configuration>();
+    private void initializePrinterIfNeeded() {
+        if (!printConfigurations) {
+            return;
+        }
+        printer = new Printer();
+        boardSize = board.length;
+    }
+
+    /**
+     * This method calculate all the possible configurations. It starts from the top left
+     * corner keeps going looping, looking for unique configurations.
+     *
+     * @return the number of unique configurations
+     */
+    public int getNumberOfConfigurations() {
+        configurationCounter = 0;
         availablePieces = PieceUtils.initializePiecesListFromInputs(kings, rooks, queens, bishops, knights);
+        limitForMapKey = getKeySequenceMaxLimit();
         availableSpots = new boolean[board.length][board[0].length];
-        configurationCodes = new HashMap<String, List<Integer>>();
+        configurationsMap = new HashMap<String, List<Integer>>();
         configurationPieces = new ArrayList<Piece>();
         searchAvailableConfigurations(0);
 
+        return getNumberOfStoredConfigurations();
+    }
+
+    /**
+     * Calculate the result of the calculation by making a sum of the sizes of the stored lists
+     *
+     * @return the number of configurations
+     */
+    private int getNumberOfStoredConfigurations() {
         int count = 0;
-        for (Map.Entry<String, List<Integer>> entry : configurationCodes.entrySet()) {
+        for (Map.Entry<String, List<Integer>> entry : configurationsMap.entrySet()) {
             count += entry.getValue().size();
         }
-        System.out.println("Total configurations " + count);
-        return configurations;
+        return count;
     }
 
     /**
@@ -191,27 +230,63 @@ public class Analyser {
     private void createConfiguration() {
         List<Piece> freshConfiguration = new ArrayList<Piece>(configurationPieces);
         Collections.sort(freshConfiguration, Piece.PositionPieceComparator);
-        String configString = generateStringFromConfig(freshConfiguration);
-        String key = configString.substring(0, 16);
-        List<Integer> listToCheck = configurationCodes.get(key);
-        if (listToCheck != null) {
-            if (!listToCheck.contains(configString.hashCode())) {
-                listToCheck.add(configString.hashCode());
-                configurationCodes.put(key, listToCheck);
-                //addNewConfiguration(freshConfiguration);
-            }
-        } else {
-            listToCheck = new ArrayList<Integer>();
-            listToCheck.add(configString.hashCode());
-            configurationCodes.put(key, listToCheck);
-            //addNewConfiguration(freshConfiguration);
+        String configurationString = generateStringFromConfig(freshConfiguration);
+
+        String key = configurationString.substring(0, limitForMapKey);
+        List<Integer> value = configurationsMap.get(key);
+        if (value == null) {
+            value = new ArrayList<Integer>();
+            addNewConfigurationAndPrint(key, value, configurationString, freshConfiguration);
+            return;
         }
+
+        if (value.contains(configurationString.hashCode())) {
+            return;
+        }
+        addNewConfigurationAndPrint(key, value, configurationString, freshConfiguration);
     }
 
-    private void addNewConfiguration(List<Piece> newConfiguration) {
+    /**
+     * This method add a new configuration to the map
+     *
+     * @param key                 the key to add
+     * @param value               the list of hashes
+     * @param configurationString the string representing the sequence of pieces with coordinates
+     * @param freshConfiguration  the list of pieces
+     */
+    private void addNewConfigurationAndPrint(String key, List<Integer> value, String configurationString,
+                                             List<Piece> freshConfiguration) {
+        value.add(configurationString.hashCode());
+        configurationsMap.put(key, value);
+        printConfigurationIfNeeded(freshConfiguration);
+    }
+
+    /**
+     * This method determines the length of the keys in the map of possible configurations
+     *
+     * @return the max length of the keys
+     */
+    private int getKeySequenceMaxLimit() {
+        int numberOfPieces = availablePieces.size();
+        return numberOfPieces == 1 ? PIECE_STRING_LENGTH : ((numberOfPieces / 2) * PIECE_STRING_LENGTH);
+    }
+
+    /**
+     * This method is in charge of printing the graphical representation of the configuration with an
+     * incremental number
+     *
+     * @param configurationPieces the pieces that are composing the configuration
+     */
+    private void printConfigurationIfNeeded(List<Piece> configurationPieces) {
+        if (!printConfigurations) {
+            return;
+        }
+        configurationCounter++;
         Configuration configuration = new Configuration();
-        configuration.setPieces(newConfiguration);
-        configurations.add(configuration);
+        configuration.setConfigurationNumber(configurationCounter);
+        configuration.setBoardSize(boardSize);
+        configuration.setPieces(configurationPieces);
+        printer.printConfiguration(configuration);
     }
 
     private String generateStringFromConfig(List<Piece> configurationPiecesList) {
@@ -233,6 +308,7 @@ public class Analyser {
         private int queens;
         private int bishops;
         private int knights;
+        private boolean printConfigurations;
 
         /**
          * Initialize the builder with the size of the board
@@ -302,6 +378,17 @@ public class Analyser {
         public Builder withKnights(int knights) {
             throwExceptionWithNegativeQuantities(knights);
             this.knights = knights;
+            return this;
+        }
+
+        /**
+         * Decide whether or not providing visual representation of the configurations
+         *
+         * @param printConfigurations if true print graphical representation of every configuration
+         * @return the builder
+         */
+        public Builder printConfigurations(boolean printConfigurations) {
+            this.printConfigurations = printConfigurations;
             return this;
         }
 

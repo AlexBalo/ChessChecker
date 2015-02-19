@@ -36,11 +36,10 @@ public class Printer {
         }
 
         if (hours == 0 && minutes == 0 && seconds == 0) {
-            timeString = new StringBuilder("Calculation time: ");
-            timeString.append("less than a second.");
+            timeString = new StringBuilder("Running time: ");
+            timeString.append("Less than a second.");
         }
 
-        System.out.println("");
         System.out.println(timeString.toString());
     }
 
@@ -55,9 +54,10 @@ public class Printer {
      * @param knights   the quantity of knights
      */
     public void printInput(int boardSize, int kings, int rooks, int queens, int bishops, int knights) {
-        System.out.println("INPUT:");
+        System.out.println("");
+        System.out.println("SUMMARY:");
         StringBuilder builder = new StringBuilder();
-        String firstPart = "Board with dimension: " + boardSize + "x" + boardSize + " containing ";
+        String firstPart = "Input: Board size: " + boardSize + "x" + boardSize + " - Content: ";
         builder.append(firstPart);
         if (kings > 0) {
             String kingNumber = kings > 1 ? kings + " Kings " : kings + " King ";
@@ -85,42 +85,31 @@ public class Printer {
     /**
      * This method prints the output of the test
      *
-     * @param boardSize     the size of the board
-     * @param configurations the configurations that need to be printed
+     * @param numberOfConfigurations the number of configurations
      */
-    public void printOutput(int boardSize, List<Configuration> configurations) {
-        int counter = 0;
-        int configurationsSize = configurations.size();
-
-        System.out.println("");
-        System.out.println("OUTPUT:");
-        if (configurationsSize == 0) {
-            System.out.println("Unfortunately no configurations were found for the input you entered");
+    public void printOutput(int numberOfConfigurations) {
+        if (numberOfConfigurations == 0) {
+            System.out.println("Output: Unfortunately no configurations were found for the input you entered");
             return;
         }
 
-        System.out.println("Total number of configurations: " + configurationsSize);
-        /*
-        for (Configuration configuration : configurations) {
-            counter++;
-            System.out.println("# " + counter);
-            populateBoard(configuration);
-            System.out.println("----------------------");
-        }*/
+        System.out.println("Output: Total number of configurations: " + numberOfConfigurations);
     }
 
     /**
      * This method populate a board with the pieces of a single configuration
-     *
      * @param configuration the configuration to use to populate the board
      */
-    private void populateBoard(int boardSize, Configuration configuration) {
+    public void printConfiguration(Configuration configuration) {
+        System.out.println("# " + configuration.getConfigurationNumber());
         List<Piece> placedPieces = configuration.getPieces();
+        int boardSize = configuration.getBoardSize();
         Piece[][] piecesBoard = new Piece[boardSize][boardSize];
         for (Piece piece : placedPieces) {
             piecesBoard[piece.getRow()][piece.getColumn()] = piece;
         }
         printBoard(piecesBoard);
+        System.out.println("----------------------");
     }
 
     /**

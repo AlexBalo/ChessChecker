@@ -22,11 +22,13 @@ public class BoardUtils {
     }
 
     /**
-     * This method determines if a certain spot can be taken based on the coordinates and the already placed pieces
+     * This method determines if a certain spot can be taken based on the coordinates
+     * and the already placed pieces
      *
      * @param rowIndex     the index of the row
      * @param columnIndex  the index of the column
      * @param placesPieces the list of already placed pieces on the board
+     *
      * @return true when the current piece can take the corresponding spot
      */
     public static boolean canPieceTakeSpot(int rowIndex, int columnIndex, List<Piece> placesPieces) {

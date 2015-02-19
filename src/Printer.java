@@ -98,6 +98,7 @@ public class Printer {
 
     /**
      * This method populate a board with the pieces of a single configuration
+     *
      * @param configuration the configuration to use to populate the board
      */
     public void printConfiguration(Configuration configuration) {

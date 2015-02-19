@@ -63,6 +63,7 @@ public class PieceUtils {
         if (quantity == 0) {
             return;
         }
+
         for (int i = 0; i < quantity; i++) {
             switch (type) {
                 case KING:

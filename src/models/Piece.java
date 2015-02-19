@@ -56,31 +56,35 @@ public abstract class Piece {
      * This method calculates if a piece can take a specific spot depending on the pieces that are
      * already places on the boards and a boolean matrix of availabilities
      *
-     * @param rowIndex      the index of the row the be evaluated
-     * @param columnIndex   the index of the column the be evaluated
-     * @param boardSpots    the matrix of available spots
-     * @param placesPieces  the already places Pieces
-     *
+     * @param rowIndex     the index of the row the be evaluated
+     * @param columnIndex  the index of the column the be evaluated
+     * @param boardSpots   the matrix of available spots
+     * @param placesPieces the already places Pieces
      * @return true if the suggested spot is available and can be occupied
      */
     public abstract boolean canPieceTakeSpot(int rowIndex, int columnIndex, boolean[][] boardSpots,
                                              List<Piece> placesPieces);
 
+    /**
+     * This comparator is used to sort pieces based on their indexes. It starts ordering using the
+     * row value and if it's the same it starts counting the columns.
+     */
     public static Comparator<Piece> PositionPieceComparator = new Comparator<Piece>() {
 
         public int compare(Piece piece1, Piece piece2) {
 
             Integer row1 = piece1.getRow();
             Integer row2 = piece2.getRow();
-            int sComp = row1.compareTo(row2);
 
+            int sComp = row1.compareTo(row2);
             if (sComp != 0) {
                 return sComp;
-            } else {
-                Integer column1 = piece1.getColumn();
-                Integer column2 = piece2.getColumn();
-                return column1.compareTo(column2);
             }
+
+            Integer column1 = piece1.getColumn();
+            Integer column2 = piece2.getColumn();
+            return column1.compareTo(column2);
+
         }
 
     };

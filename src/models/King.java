@@ -6,6 +6,7 @@ import java.util.List;
 
 /**
  * Created by alessandro.balocco
+ * This class is the implementation of the KING piece
  */
 public class King extends Piece {
 

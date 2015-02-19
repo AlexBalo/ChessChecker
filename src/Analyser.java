@@ -24,10 +24,11 @@ public class Analyser {
     private final boolean printConfigurations;
 
     /**
-     * An instance of the printer and a configuration counter. When user decide to have graphical representations
+     * An instance of the printer and a configuration counter.
+     * When user decide to have graphical representations
      */
-    private int configurationCounter;
     private Printer printer;
+    private int configurationCounter;
     private int boardSize;
     /**
      * This variable identifies the max length for map keys depending on user input
@@ -169,11 +170,24 @@ public class Analyser {
         cleanTmpPiecesListIfNecessary(currentIndex);
     }
 
+    /**
+     * This method adds a piece to a temporary configuration. After adding it it
+     * also recalculate the available spots based on the new list of pieces
+     *
+     * @param piece the piece to add
+     */
     private void addPieceToConfiguration(Piece piece) {
         configurationPieces.add(piece);
         availableSpots = calculateAvailableSpots();
     }
 
+    /**
+     * This method removes last piece from a temporary configuration. When is not possible
+     * to complete the all configuration last item is removed and with the removal it is also
+     * recalculated the matrix of available spots.
+     *
+     * @param index the index to be removed.
+     */
     private void removePieceFromConfiguration(int index) {
         configurationPieces.remove(index);
         availableSpots = calculateAvailableSpots();
@@ -289,6 +303,13 @@ public class Analyser {
         printer.printConfiguration(configuration);
     }
 
+    /**
+     * This method generate a string representing a specific configuration. It is used to compare
+     * different configurations because algorithms only looks for unique configurations and compares them.
+     *
+     * @param configurationPiecesList the list of pieces the configuration is composed by
+     * @return a string represented by a sequence of piece id and coordinates (ex: K 12 Q 13 N 24...)
+     */
     private String generateStringFromConfig(List<Piece> configurationPiecesList) {
         String string = "";
         for (Piece piece : configurationPiecesList) {

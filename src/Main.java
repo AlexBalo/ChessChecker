@@ -3,7 +3,7 @@
  */
 public class Main {
 
-    private static final int BOARD_SIZE = 6;
+    private static final int BOARD_SIZE = 7;
     private static final int KINGS = 2;
     private static final int ROOKS = 0;
     private static final int QUEENS = 2;

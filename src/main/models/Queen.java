@@ -1,22 +1,22 @@
-package models;
+package main.models;
 
-import utils.BoardUtils;
+import main.utils.BoardUtils;
 
 import java.util.List;
 
 /**
  * Created by alessandro.balocco
- * This class is the implementation of the BISHOP piece
+ * This class is the implementation of the QUEEN piece
  */
-public class Bishop extends Piece {
+public class Queen extends Piece {
 
-    public Bishop() {
+    public Queen() {
 
     }
 
     @Override
     public String getIdentifier() {
-        return " B ";
+        return " Q ";
     }
 
     @Override
@@ -33,6 +33,7 @@ public class Bishop extends Piece {
         int rowsLength = boardSpots.length;
         int columnsLength = boardSpots[0].length;
 
+        // DIAGONAL
         // Left
         int counter = 0;
         for (int i = columnIndex; i >= 0; i--) {
@@ -69,6 +70,27 @@ public class Bishop extends Piece {
             if (newColumnIndex < columnsLength && newRowDownIndex < rowsLength) {
                 BoardUtils.markSpotAsTaken(newRowDownIndex, newColumnIndex, boardSpots);
             }
+        }
+
+        // CROSS
+        // Left
+        for (int i = 0; i < columnIndex; i++) {
+            BoardUtils.markSpotAsTaken(rowIndex, i, boardSpots);
+        }
+
+        // Top
+        for (int i = 0; i < rowIndex; i++) {
+            BoardUtils.markSpotAsTaken(i, columnIndex, boardSpots);
+        }
+
+        // Right
+        for (int i = columnIndex; i < columnsLength; i++) {
+            BoardUtils.markSpotAsTaken(rowIndex, i, boardSpots);
+        }
+
+        // Bottom
+        for (int i = rowIndex; i < rowsLength; i++) {
+            BoardUtils.markSpotAsTaken(i, columnIndex, boardSpots);
         }
     }
 
@@ -81,6 +103,7 @@ public class Bishop extends Piece {
         int rowsLength = boardSpots.length;
         int columnsLength = boardSpots[0].length;
 
+        // DIAGONAL
         // Left
         int counter = 0;
         for (int i = columnIndex; i >= 0; i--) {
@@ -124,6 +147,35 @@ public class Bishop extends Piece {
                 if (!BoardUtils.canPieceTakeSpot(newRowDownIndex, newColumnIndex, placedPieces)) {
                     return false;
                 }
+            }
+        }
+
+        // CROSS
+        // Left
+        for (int i = 0; i < columnIndex; i++) {
+            if (!BoardUtils.canPieceTakeSpot(rowIndex, i, placedPieces)) {
+                return false;
+            }
+        }
+
+        // Top
+        for (int i = 0; i < rowIndex; i++) {
+            if (!BoardUtils.canPieceTakeSpot(i, columnIndex, placedPieces)) {
+                return false;
+            }
+        }
+
+        // Right
+        for (int i = columnIndex; i < columnsLength; i++) {
+            if (!BoardUtils.canPieceTakeSpot(rowIndex, i, placedPieces)) {
+                return false;
+            }
+        }
+
+        // Bottom
+        for (int i = rowIndex; i < rowsLength; i++) {
+            if (!BoardUtils.canPieceTakeSpot(i, columnIndex, placedPieces)) {
+                return false;
             }
         }
         return true;

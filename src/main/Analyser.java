@@ -1,5 +1,7 @@
-import models.Piece;
-import utils.PieceUtils;
+package main;
+
+import main.models.Piece;
+import main.utils.PieceUtils;
 
 import java.util.*;
 

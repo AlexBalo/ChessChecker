@@ -1,4 +1,6 @@
-import models.Piece;
+package main;
+
+import main.models.Piece;
 
 import java.util.List;
 

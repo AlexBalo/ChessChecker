@@ -1,4 +1,4 @@
-package models;
+package main.models;
 
 /**
  * Created by alessandro.balocco

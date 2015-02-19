@@ -1,4 +1,4 @@
-package models;
+package main.models;
 
 import java.util.Comparator;
 import java.util.List;

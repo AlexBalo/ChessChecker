@@ -1,6 +1,6 @@
-package utils;
+package main.utils;
 
-import models.*;
+import main.models.*;
 
 import java.util.ArrayList;
 import java.util.List;

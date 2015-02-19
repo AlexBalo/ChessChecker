@@ -1,6 +1,6 @@
-package models;
+package main.models;
 
-import utils.BoardUtils;
+import main.utils.BoardUtils;
 
 import java.util.List;
 

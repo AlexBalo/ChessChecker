@@ -1,6 +1,6 @@
-package utils;
+package main.utils;
 
-import models.Piece;
+import main.models.Piece;
 
 import java.util.List;
 

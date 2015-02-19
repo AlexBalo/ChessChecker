@@ -136,10 +136,6 @@ public class Analyser {
         for (int i = 0; i < rowsLength; i++) {
             int columnsLength = board[i].length;
             for (int j = 0; j < columnsLength; j++) {
-                // TODO: Remove it, it's just for test purposes
-                if (currentIndex == 0) {
-                    System.out.println("row: " + i + " - column: " + j);
-                }
                 cleanTmpPiecesListIfNecessary(currentIndex);
 
                 Piece piece = availablePieces.get(currentIndex);
